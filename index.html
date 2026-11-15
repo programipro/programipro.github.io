@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="sl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Programi Pro</title>
+<meta name="description" content="Predstavitev programske opreme – slike, video navodila, opisi, cene.">
+<meta name="theme-color" content="#0b0d12">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%236c8cff'/%3E%3Cstop offset='1' stop-color='%23a06cff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Cpath d='M22 14h13a13 13 0 0 1 0 26h-5v10h-8z' fill='white'/%3E%3Cpath d='M31 21.5l10 5.5-10 5.5z' fill='%236c8cff'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#0b0d12;--surface:#141821;--surface2:#1b2030;--text:#e8ecf3;--muted:#8b94a7;
+  --accent:#6c8cff;--accent2:#a06cff;--border:rgba(255,255,255,.09);--danger:#ff6b7a;--ok:#4ade80;
+  --shadow:0 10px 40px rgba(0,0,0,.45);--r:18px;
+  --font:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+[data-theme=light]{
+  --bg:#f4f6fb;--surface:#ffffff;--surface2:#eef1f8;--text:#161a24;--muted:#5d667a;
+  --border:rgba(20,30,60,.1);--shadow:0 10px 40px rgba(30,40,80,.12);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.6;
+  background-image:radial-gradient(900px 500px at 85% -10%,rgba(108,140,255,.14),transparent 60%),radial-gradient(700px 420px at -5% 5%,rgba(160,108,255,.10),transparent 60%);
+  background-attachment:fixed}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--accent)}
+.wrap{max-width:1280px;margin:0 auto;padding:0 20px}
+
+/* header */
+.site-header{position:sticky;top:0;z-index:50;backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);
+  background:color-mix(in srgb,var(--bg) 78%,transparent);border-bottom:1px solid var(--border);padding-top:env(safe-area-inset-top)}
+.bar{display:flex;align-items:center;gap:12px;height:64px}
+.brand{display:flex;align-items:center;gap:12px;font-weight:700;font-size:1.1rem;letter-spacing:-.01em;text-decoration:none;color:var(--text);min-width:0}
+.logo{flex:none;width:40px;height:40px;display:block;filter:drop-shadow(0 6px 14px rgba(108,140,255,.45))}
+.logo svg{width:100%;height:100%;display:block}
+.brand span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.5;padding-bottom:.1em}
+.spacer{flex:1}
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border);background:var(--surface);padding:9px 16px;border-radius:12px;cursor:pointer;font-weight:600;font-size:.9rem;transition:.15s;text-decoration:none;color:var(--text);white-space:nowrap}
+.btn:hover{border-color:var(--accent);transform:translateY(-1px)}
+.btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));border-color:transparent;color:#fff;box-shadow:0 8px 22px rgba(108,140,255,.35)}
+.btn.danger{color:var(--danger)}
+.btn.sm{padding:6px 11px;font-size:.8rem;border-radius:9px}
+.btn.icon{padding:9px 11px}
+.btn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.admin-btn{border-color:color-mix(in srgb,var(--accent) 50%,var(--border))}
+
+/* hero */
+.hero{padding:56px 0 24px}
+.hero h1{font-size:clamp(2rem,5vw,3.4rem);line-height:1.2;padding-bottom:.12em;letter-spacing:-.03em;margin:0 0 14px;
+  background:linear-gradient(120deg,var(--text) 30%,var(--accent) 80%,var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{margin:0;max-width:640px;color:var(--muted);font-size:1.08rem}
+.tools{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin:28px 0 8px}
+.search{flex:1 1 260px;position:relative;max-width:420px}
+.search input{width:100%;padding:12px 14px 12px 42px;border-radius:14px;border:1px solid var(--border);background:var(--surface);outline:none}
+.search input:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(108,140,255,.15)}
+.search svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;stroke:var(--muted);fill:none;stroke-width:2}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:4px 2px;scrollbar-width:none;flex:1 1 100%}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--border);background:var(--surface);border-radius:999px;padding:8px 16px;cursor:pointer;font-weight:600;font-size:.88rem;color:var(--muted);transition:.15s}
+.chip:hover{color:var(--text);border-color:var(--accent)}
+.chip.on{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
+.chip small{opacity:.7;margin-left:4px;font-weight:500}
+
+/* admin bar */
+.adminbar{display:none;background:linear-gradient(90deg,rgba(108,140,255,.18),rgba(160,108,255,.18));border-bottom:1px solid var(--border)}
+body.is-admin .adminbar{display:block}
+.adminbar .in{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:10px 0}
+.adminbar b{font-size:.85rem;margin-right:6px}
+.dirty{width:8px;height:8px;border-radius:50%;background:#ffb020;display:none}
+body.is-dirty .dirty{display:inline-block}
+
+/* list */
+.list{display:flex;flex-direction:column;gap:56px;padding:28px 0 80px}
+.item{scroll-margin-top:90px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.row.single{grid-template-columns:1fr}
+.row.single .media{max-width:760px}
+.media{position:relative}
+.frame{position:relative;aspect-ratio:16/9;border-radius:var(--r);overflow:hidden;background:#000;border:1px solid var(--border);box-shadow:var(--shadow)}
+.frame img{width:100%;height:100%;object-fit:cover;display:block;cursor:zoom-in;transition:transform .5s}
+.frame:hover img{transform:scale(1.015)}
+.tag{position:absolute;left:12px;top:12px;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);color:#fff;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:999px;pointer-events:none;z-index:2}
+.yt{all:unset;position:absolute;inset:0;cursor:pointer;display:block}
+.yt img{cursor:pointer}
+.yt .play{position:absolute;left:50%;top:50%;width:76px;height:76px;margin:-38px 0 0 -38px;border-radius:50%;background:rgba(255,255,255,.95);display:grid;place-items:center;box-shadow:0 10px 40px rgba(0,0,0,.5);transition:.2s}
+.yt:hover .play{transform:scale(1.08)}
+.yt .play svg{width:30px;height:30px;fill:#111;margin-left:4px}
+.frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.fs{position:absolute;right:10px;bottom:10px;z-index:3;border:0;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);color:#fff;width:38px;height:38px;border-radius:10px;cursor:pointer;display:grid;place-items:center}
+.fs svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+.info{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:28px;margin-top:22px}
+.main h2{margin:6px 0 10px;font-size:clamp(1.4rem,3vw,2rem);letter-spacing:-.02em;line-height:1.2}
+.cat{display:inline-block;font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);background:rgba(108,140,255,.12);padding:4px 12px;border-radius:999px}
+.desc{color:color-mix(in srgb,var(--text) 82%,var(--muted));font-size:1.02rem}
+.desc p{margin:0 0 12px}
+.meta{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px;align-self:start}
+.price{font-size:2rem;font-weight:800;letter-spacing:-.02em}
+.price small{font-size:.9rem;color:var(--muted);font-weight:500}
+.meta dl{margin:14px 0 18px;display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:.9rem}
+.meta dt{color:var(--muted)}
+.meta dd{margin:0;text-align:right;font-weight:600;word-break:break-word}
+.meta .btn{width:100%;justify-content:center}
+.sku{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.tools-row{display:none;gap:8px;flex-wrap:wrap;margin-top:16px}
+body.is-admin .tools-row{display:flex}
+.empty{text-align:center;color:var(--muted);padding:80px 0}
+.skeleton{height:320px;border-radius:var(--r);background:linear-gradient(90deg,var(--surface),var(--surface2),var(--surface));background-size:200% 100%;animation:sk 1.4s infinite}
+@keyframes sk{to{background-position:-200% 0}}
+footer{border-top:1px solid var(--border);padding:34px 0 50px;color:var(--muted);font-size:.9rem}
+
+/* modal */
+.ov{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);display:grid;place-items:center;padding:16px;overflow:auto}
+.modal{width:min(640px,100%);max-height:calc(100dvh - 32px);overflow:auto;background:var(--surface);border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow);padding:26px}
+.modal h3{margin:0 0 4px;font-size:1.3rem}
+.modal .sub{color:var(--muted);font-size:.9rem;margin:0 0 18px}
+.fld{margin-bottom:14px}
+.fld label{display:block;font-size:.8rem;font-weight:700;color:var(--muted);margin-bottom:6px;letter-spacing:.03em;text-transform:uppercase}
+.fld input,.fld select,.fld textarea{width:100%;padding:11px 13px;border-radius:12px;border:1px solid var(--border);background:var(--surface2);outline:none}
+.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(108,140,255,.15)}
+.fld textarea{min-height:130px;resize:vertical}
+.fld .hint{font-size:.78rem;color:var(--muted);margin-top:5px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.prev{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:4px 0 14px}
+.prev div{aspect-ratio:16/9;border-radius:10px;background:var(--surface2) center/cover no-repeat;border:1px solid var(--border);display:grid;place-items:center;font-size:.75rem;color:var(--muted)}
+.actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap}
+.catrow{display:flex;gap:8px;margin-bottom:8px}
+.catrow input{flex:1;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--surface2)}
+.msg{font-size:.85rem;margin-top:10px;min-height:1.2em}
+.msg.err{color:var(--danger)}
+.chk{display:flex;gap:8px;align-items:center;font-size:.88rem;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,30px);opacity:0;z-index:200;background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow);padding:12px 20px;border-radius:14px;font-weight:600;transition:.25s;pointer-events:none;max-width:90vw}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast.err{border-color:var(--danger);color:var(--danger)}
+
+/* lightbox */
+.lb{position:fixed;inset:0;z-index:300;background:#000;display:grid;place-items:center;cursor:zoom-out}
+.lb img{max-width:100vw;max-height:100dvh;object-fit:contain}
+.lb button{position:absolute;right:max(14px,env(safe-area-inset-right));top:max(14px,env(safe-area-inset-top));border:0;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.18);color:#fff;font-size:22px;cursor:pointer}
+
+/* tablet / phone portrait */
+@media (max-width:900px){
+  .row{grid-template-columns:1fr;gap:16px}
+  .info{grid-template-columns:1fr;gap:18px}
+  .hero{padding-top:36px}
+  .list{gap:44px}
+  .g2{grid-template-columns:1fr}
+}
+@media (max-width:560px){
+  .wrap{padding:0 14px}
+  .frame{border-radius:14px}
+  .btn .lbl{display:none}
+  .btn.admin-btn .lbl{display:inline}
+}
+
+/* PHONE HELD SIDEWAYS: each image and video fills the whole screen */
+@media (orientation:landscape) and (max-height:520px){
+  html{scroll-snap-type:y proximity}
+  .site-header{position:static}
+  .hero{padding:20px 0 6px}
+  .hero h1{font-size:1.6rem}
+  .row,.row.single{grid-template-columns:1fr;gap:0}
+  .row.single .media{max-width:none}
+  .wrap.listwrap{padding:0}
+  .list{gap:28px}
+  .media{height:100dvh;display:grid;place-items:center;background:#000;scroll-snap-align:start}
+  .frame{width:min(100vw,calc(100dvh * 16 / 9));max-height:100dvh;border-radius:0;border:0;box-shadow:none}
+  .info{padding:20px max(20px,env(safe-area-inset-left));grid-template-columns:1fr 240px;margin-top:0}
+  .item{scroll-margin-top:0}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap bar">
+    <a class="brand" href="#top"><div class="logo"><svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6c8cff"/><stop offset="1" stop-color="#a06cff"/></linearGradient><linearGradient id="lh" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".28"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#lg)"/><rect width="64" height="64" rx="16" fill="url(#lh)"/><path d="M22 14h13a13 13 0 0 1 0 26h-5v10h-8z" fill="#fff"/><path d="M31 21.5l10 5.5-10 5.5z" fill="#6c8cff"/></svg></div><span id="siteTitle">Programi Pro</span></a>
+    <div class="spacer"></div>
+    <button class="btn icon" id="themeBtn" title="Svetla / temna tema" aria-label="Tema"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg></button>
+    <button class="btn admin-btn" id="adminBtn"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 118 0v4"/></svg><span class="lbl">Admin</span></button>
+  </div>
+</header>
+
+<div class="adminbar"><div class="wrap in">
+  <b>Admin način</b>
+  <button class="btn sm primary" data-a="add">+ Dodaj program</button>
+  <button class="btn sm" data-a="cats">Kategorije</button>
+  <button class="btn sm" data-a="site">Stran</button>
+  <span class="spacer"></span>
+  <span class="dirty" title="Neshranjene spremembe"></span>
+  <button class="btn sm primary" data-a="save" id="saveBtn">Shrani na GitHub</button>
+  <button class="btn sm" data-a="logout">Odjava</button>
+</div></div>
+
+<main id="top">
+  <section class="wrap hero">
+    <h1 id="heroTitle">Programi, ki delajo za vas</h1>
+    <p id="heroSub"></p>
+    <div class="tools">
+      <label class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input id="q" type="search" placeholder="Poišči program, šifro …" autocomplete="off"></label>
+      <div class="chips" id="chips"></div>
+    </div>
+  </section>
+  <section class="wrap listwrap"><div class="list" id="list"><div class="skeleton"></div></div></section>
+</main>
+
+<footer><div class="wrap" id="foot"></div></footer>
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+/* ============ KONFIGURACIJA ============ */
+const DATA_FILE = "data.json";
+const DEFAULT_DATA = {
+  site:{title:"Programi Pro",tagline:"Programska oprema, ki prihrani čas. Oglejte si posnetke, video navodila in opise.",contact:""},
+  categories:[
+    {id:"poslovni",name:"Poslovni programi"},{id:"domaci",name:"Programi za domačo rabo"},
+    {id:"uporabni",name:"Razni uporabni programi"},{id:"izobrazevalni",name:"Izobraževalni programi"},{id:"igre",name:"Igre"}],
+  products:[{id:"demo1",sku:"SW-0001",title:"Primer programa",category:"uporabni",price:"29",
+    image:"",video:"",
+    description:"To je primer vnosa. Vstopite v Admin, dodajte svoje programe in jih shranite na GitHub.\n\nVsak program ima sliko 16:9, video navodilo, opis, ceno in šifro artikla."}]
+};
+/* ============ STANJE ============ */
+const $ = (s,r=document)=>r.querySelector(s);
+const S = {data:structuredClone(DEFAULT_DATA),admin:false,token:null,cfg:null,sha:null,dirty:false,cat:"all",q:""};
+const esc = s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const uid = ()=>"p"+Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-3);
+
+/* ============ POMOŽNE FUNKCIJE ============ */
+function ytParse(u){
+  u=(u||"").trim(); if(!u) return null;
+  if(/^[\w-]{11}$/.test(u)) return {id:u,start:0};
+  try{
+    const url=new URL(u.startsWith("http")?u:"https://"+u);
+    let id=null;
+    if(url.hostname.includes("youtu.be")) id=url.pathname.slice(1).split("/")[0];
+    else if(url.hostname.includes("youtube")){
+      id=url.searchParams.get("v");
+      const m=url.pathname.match(/\/(embed|shorts|live|v)\/([\w-]{11})/); if(!id&&m) id=m[2];
+    }
+    if(!id||!/^[\w-]{11}$/.test(id)) return null;
+    const t=url.searchParams.get("t")||url.searchParams.get("start")||"0";
+    return {id,start:parseInt(t)||0};
+  }catch{return null}
+}
+function imgFix(u){
+  u=(u||"").trim(); if(!u) return "";
+  try{
+    const url=new URL(u);
+    if(/(^|\.)imgur\.com$/.test(url.hostname)&&url.hostname!=="i.imgur.com"){
+      const m=url.pathname.match(/^\/([A-Za-z0-9]{5,8})$/); // povezava na stran slike -> direktna
+      if(m) return `https://i.imgur.com/${m[1]}.jpg`;
+    }
+  }catch{}
+  return u;
+}
+function ph(title){
+  const t=esc((title||"Program").slice(0,28));
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#27325f"/><stop offset="1" stop-color="#5b3b8c"/></linearGradient></defs><rect width="1600" height="900" fill="url(#g)"/><circle cx="1250" cy="200" r="260" fill="#fff" opacity=".05"/><text x="800" y="480" fill="#fff" opacity=".85" font-family="Arial" font-size="84" font-weight="700" text-anchor="middle">${t}</text></svg>`;
+  return "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg);
+}
+function money(p){
+  p=String(p??"").trim(); if(p==="") return {v:"Po dogovoru",cur:""};
+  const n=Number(p.replace(",","."));
+  if(!isNaN(n)) return n===0?{v:"Brezplačno",cur:""}:{v:n.toLocaleString("sl-SI",{minimumFractionDigits:n%1?2:0,maximumFractionDigits:2}),cur:" €"};
+  return {v:p,cur:""};
+}
+const catName = id=>(S.data.categories.find(c=>c.id===id)||{}).name||"";
+function toast(m,err){const t=$("#toast");t.textContent=m;t.className="toast show"+(err?" err":"");clearTimeout(toast.t);toast.t=setTimeout(()=>t.className="toast",3200)}
+function setDirty(v=true){S.dirty=v;document.body.classList.toggle("is-dirty",v)}
+window.addEventListener("beforeunload",e=>{if(S.dirty){e.preventDefault();e.returnValue=""}});
+const b64e=s=>btoa(unescape(encodeURIComponent(s)));
+const b64d=s=>decodeURIComponent(escape(atob(s.replace(/\n/g,""))));
+function normalize(d){
+  d=d&&typeof d==="object"?d:{};
+  return {site:{...DEFAULT_DATA.site,...(d.site||{})},categories:Array.isArray(d.categories)?d.categories:[],products:Array.isArray(d.products)?d.products:[]};
+}
+
+/* ============ NALAGANJE ============ */
+async function loadPublic(){
+  try{
+    const r=await fetch(DATA_FILE+"?v="+Date.now(),{cache:"no-store"});
+    if(!r.ok) throw 0;
+    S.data=normalize(await r.json());
+  }catch{ S.data=normalize(DEFAULT_DATA); }
+  render();
+}
+
+/* ============ PRIKAZ ============ */
+function render(){
+  const d=S.data;
+  document.title=d.site.title||"Programi Pro";
+  $("#siteTitle").textContent=d.site.title||"Programi Pro";
+  $("#heroTitle").textContent=d.site.title||"Programi Pro";
+  $("#heroSub").textContent=d.site.tagline||"";
+  $("#foot").innerHTML=`© ${new Date().getFullYear()} ${esc(d.site.title||"")}`+(d.site.contact?` · <a href="mailto:${esc(d.site.contact)}">${esc(d.site.contact)}</a>`:"");
+  // chips
+  const counts={};d.products.forEach(p=>counts[p.category]=(counts[p.category]||0)+1);
+  $("#chips").innerHTML=`<button class="chip ${S.cat==="all"?"on":""}" data-cat="all">Vse<small>${d.products.length}</small></button>`+
+    d.categories.map(c=>`<button class="chip ${S.cat===c.id?"on":""}" data-cat="${esc(c.id)}">${esc(c.name)}<small>${counts[c.id]||0}</small></button>`).join("");
+  // list
+  const q=S.q.toLowerCase();
+  const vis=visible();
+  $("#list").innerHTML=vis.length?vis.map(card).join(""):`<div class="empty">${d.products.length?"Ni zadetkov.":"Še ni dodanih programov."}</div>`;
+}
+function visible(){
+  const q=S.q.trim().toLowerCase();
+  return S.data.products.filter(p=>(S.cat==="all"||p.category===S.cat)&&(!q||[p.title,p.sku,p.description,catName(p.category)].join(" ").toLowerCase().includes(q)));
+}
+const ICON_FS='<svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>';
+function card(p){
+  const yt=ytParse(p.video), img=imgFix(p.image)||ph(p.title), m=money(p.price);
+  const paras=String(p.description||"").split(/\n{2,}/).map(x=>`<p>${esc(x).replace(/\n/g,"<br>")}</p>`).join("");
+  const vid=yt?`<div class="media"><div class="frame"><span class="tag">Navodila</span>
+      <button class="yt" data-yt="${yt.id}" data-start="${yt.start}" aria-label="Predvajaj video: ${esc(p.title)}">
+      <img loading="lazy" referrerpolicy="no-referrer" alt="" src="https://i.ytimg.com/vi/${yt.id}/hqdefault.jpg"><span class="play"><svg viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></svg></span></button></div></div>`:"";
+  const mail=S.data.site.contact?`<a class="btn primary" href="mailto:${esc(S.data.site.contact)}?subject=${encodeURIComponent("Povpraševanje: "+(p.sku||"")+" "+p.title)}">Povprašaj</a>`:"";
+  return `<article class="item" id="${esc(p.id)}">
+    <div class="row ${yt?"":"single"}">
+      <div class="media"><div class="frame"><span class="tag">Program</span>
+        <img loading="lazy" referrerpolicy="no-referrer" data-title="${esc(p.title)}" data-zoom alt="${esc(p.title)}" src="${esc(img)}">
+        <button class="fs" data-zoom-btn aria-label="Celozaslonski prikaz">${ICON_FS}</button></div></div>
+      ${vid}
+    </div>
+    <div class="info">
+      <div class="main">${p.category?`<span class="cat">${esc(catName(p.category))}</span>`:""}<h2>${esc(p.title)}</h2><div class="desc">${paras}</div></div>
+      <aside class="meta"><div class="price">${esc(m.v)}<small>${m.cur}</small></div>
+        <dl><dt>Šifra</dt><dd class="sku">${esc(p.sku||"–")}</dd><dt>Kategorija</dt><dd>${esc(catName(p.category)||"–")}</dd></dl>${mail}</aside>
+    </div>
+    <div class="tools-row">
+      <button class="btn sm" data-a="edit" data-id="${esc(p.id)}">Uredi</button>
+      <button class="btn sm" data-a="up" data-id="${esc(p.id)}">↑ Gor</button>
+      <button class="btn sm" data-a="down" data-id="${esc(p.id)}">↓ Dol</button>
+      <button class="btn sm danger" data-a="del" data-id="${esc(p.id)}">Izbriši</button>
+    </div>
+  </article>`;
+}
+
+/* ============ DOGODKI ============ */
+document.addEventListener("error",e=>{
+  const t=e.target; if(t.tagName==="IMG"&&!t.dataset.failed&&t.dataset.title!==undefined){t.dataset.failed=1;t.src=ph(t.dataset.title)}
+},true);
+$("#q").addEventListener("input",e=>{S.q=e.target.value;render()});
+$("#themeBtn").onclick=()=>{
+  const n=document.documentElement.dataset.theme==="light"?"dark":"light";
+  document.documentElement.dataset.theme=n;try{localStorage.setItem("theme",n)}catch{}
+  $('meta[name=theme-color]').content=n==="light"?"#f4f6fb":"#0b0d12";
+};
+try{const t=localStorage.getItem("theme");if(t){document.documentElement.dataset.theme=t;$('meta[name=theme-color]').content=t==="light"?"#f4f6fb":"#0b0d12"}}catch{}
+
+document.addEventListener("click",e=>{
+  const chip=e.target.closest("[data-cat]"); if(chip){S.cat=chip.dataset.cat;render();return}
+  const yt=e.target.closest(".yt");
+  if(yt){
+    const f=yt.parentElement;
+    f.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${yt.dataset.yt}?autoplay=1&rel=0&playsinline=1&start=${yt.dataset.start||0}" title="YouTube" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
+    return;
+  }
+  if(e.target.closest("[data-zoom],[data-zoom-btn]")){const img=e.target.closest(".frame").querySelector("img");lightbox(img.currentSrc||img.src);return}
+  const a=e.target.closest("[data-a]"); if(a) act(a.dataset.a,a.dataset.id);
+});
+$("#adminBtn").onclick=()=>S.admin?document.querySelector(".adminbar").scrollIntoView({behavior:"smooth"}):loginModal();
+
+/* ============ LIGHTBOX (celozaslonsko, ležeče) ============ */
+function lightbox(src){
+  const lb=document.createElement("div");lb.className="lb";
+  lb.innerHTML=`<img alt="" src="${esc(src)}"><button aria-label="Zapri">✕</button>`;
+  document.body.appendChild(lb);
+  const close=()=>{document.removeEventListener("keydown",key);document.removeEventListener("fullscreenchange",fsc);
+    try{screen.orientation&&screen.orientation.unlock&&screen.orientation.unlock()}catch{}
+    if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});lb.remove()};
+  const key=e=>{if(e.key==="Escape")close()};
+  const fsc=()=>{if(!document.fullscreenElement)close()};
+  lb.onclick=close;document.addEventListener("keydown",key);
+  const p=lb.requestFullscreen?lb.requestFullscreen():null;
+  if(p&&p.then){p.then(()=>{document.addEventListener("fullscreenchange",fsc);
+    try{screen.orientation&&screen.orientation.lock&&screen.orientation.lock("landscape").catch(()=>{})}catch{}}).catch(()=>{})}
+}
+
+/* ============ MODALI ============ */
+function modal(html){
+  const ov=document.createElement("div");ov.className="ov";
+  ov.innerHTML=`<div class="modal" role="dialog" aria-modal="true">${html}</div>`;
+  document.body.appendChild(ov);
+  ov.addEventListener("mousedown",e=>{if(e.target===ov)ov.remove()});
+  ov.close=()=>ov.remove();return ov;
+}
+
+/* ============ ADMIN: PRIJAVA ============ */
+function autoRepo(){
+  const h=location.hostname,p=location.pathname.split("/").filter(Boolean);
+  if(h.endsWith(".github.io")) return {owner:h.split(".")[0],repo:p[0]||h};
+  return {owner:"",repo:""};
+}
+function savedCfg(){try{return JSON.parse(localStorage.getItem("gh_cfg")||"null")}catch{return null}}
+function loginModal(){
+  const a=autoRepo(),s=savedCfg()||{};
+  const ov=modal(`<h3>Prijava v admin</h3><p class="sub">Vnesite GitHub token (fine-grained, dovoljenje <b>Contents: Read and write</b> samo za ta repozitorij).</p>
+  <form id="lf">
+    <div class="fld"><label>GitHub token</label><input name="token" type="password" autocomplete="off" required placeholder="github_pat_…"></div>
+    <div class="g2"><div class="fld"><label>Lastnik (uporabnik)</label><input name="owner" value="${esc(s.owner||a.owner)}" required></div>
+    <div class="fld"><label>Repozitorij</label><input name="repo" value="${esc(s.repo||a.repo)}" required></div></div>
+    <div class="g2"><div class="fld"><label>Veja</label><input name="branch" value="${esc(s.branch||"main")}" required></div>
+    <div class="fld"><label>Datoteka s podatki</label><input name="path" value="${esc(s.path||DATA_FILE)}" required></div></div>
+    <label class="chk"><input type="checkbox" name="remember"> Zapomni si token v tem brskalniku</label>
+    <div class="msg" id="lmsg"></div>
+    <div class="actions"><button type="button" class="btn" id="lc">Prekliči</button><button class="btn primary">Vstopi</button></div>
+  </form>`);
+  $("#lc",ov).onclick=ov.close;
+  $("#lf",ov).onsubmit=async e=>{
+    e.preventDefault();const f=Object.fromEntries(new FormData(e.target));
+    const msg=$("#lmsg",ov);msg.className="msg";msg.textContent="Preverjam …";
+    const cfg={owner:f.owner.trim(),repo:f.repo.trim(),branch:f.branch.trim(),path:f.path.trim()};
+    try{
+      const r=await gh(`/repos/${cfg.owner}/${cfg.repo}`,{},f.token.trim());
+      if(!r.permissions||!r.permissions.push) throw new Error("Token nima pravice pisanja (Contents: Read and write).");
+      S.token=f.token.trim();S.cfg=cfg;S.admin=true;
+      try{localStorage.setItem("gh_cfg",JSON.stringify(cfg));
+        (f.remember?localStorage:sessionStorage).setItem("gh_tok",S.token);
+        (f.remember?sessionStorage:localStorage).removeItem("gh_tok")}catch{}
+      ov.close();await enterAdmin();
+    }catch(err){msg.className="msg err";msg.textContent=err.message||"Prijava ni uspela."}
+  };
+}
+async function gh(path,opt={},token=S.token){
+  const r=await fetch("https://api.github.com"+path,{...opt,headers:{Accept:"application/vnd.github+json",Authorization:"Bearer "+token,"X-GitHub-Api-Version":"2022-11-28",...(opt.headers||{})}});
+  if(r.status===401) throw new Error("Neveljaven ali potekel token.");
+  if(r.status===404&&!opt.allow404) throw new Error("Repozitorij ali datoteka ni najdena (preverite lastnika, ime in pravice tokena).");
+  if(r.status===404) return null;
+  if(!r.ok){let m="";try{m=(await r.json()).message}catch{}throw new Error("GitHub: "+(m||r.status))}
+  return r.json();
+}
+async function enterAdmin(){
+  document.body.classList.add("is-admin");
+  try{
+    const c=S.cfg,j=await gh(`/repos/${c.owner}/${c.repo}/contents/${encodeURIComponent(c.path).replace(/%2F/g,"/")}?ref=${encodeURIComponent(c.branch)}`,{allow404:true});
+    if(j){S.data=normalize(JSON.parse(b64d(j.content)));S.sha=j.sha}
+    else{S.sha=null;if(!S.data.products.length||S.data.products[0].id==="demo1"){/* prva uporaba: začni z vzorcem */}}
+    setDirty(false);toast("Prijavljeni ste kot admin");
+  }catch(err){toast(err.message,true)}
+  render();
+}
+function logout(){
+  if(S.dirty&&!confirm("Imate neshranjene spremembe. Se res odjavim?")) return;
+  S.admin=false;S.token=null;try{sessionStorage.removeItem("gh_tok");localStorage.removeItem("gh_tok")}catch{}
+  document.body.classList.remove("is-admin");setDirty(false);loadPublic();toast("Odjavljeni");
+}
+
+/* ============ ADMIN: AKCIJE ============ */
+function act(a,id){
+  if(!S.admin) return;
+  const i=S.data.products.findIndex(p=>p.id===id);
+  if(a==="add") editor(null);
+  else if(a==="edit") editor(S.data.products[i]);
+  else if(a==="del"){if(confirm("Izbrišem »"+S.data.products[i].title+"«?")){S.data.products.splice(i,1);setDirty();render()}}
+  else if(a==="up"||a==="down"){
+    const vis=visible(),k=vis.findIndex(p=>p.id===id),n=vis[k+(a==="up"?-1:1)]; if(!n) return;
+    const j=S.data.products.indexOf(n);[S.data.products[i],S.data.products[j]]=[S.data.products[j],S.data.products[i]];setDirty();render();
+    document.getElementById(id)?.scrollIntoView({block:"center"});
+  }
+  else if(a==="cats") catsModal();
+  else if(a==="site") siteModal();
+  else if(a==="save") save();
+  else if(a==="logout") logout();
+}
+function nextSku(){
+  let max=0;S.data.products.forEach(p=>{const m=/(\d+)$/.exec(p.sku||"");if(m)max=Math.max(max,+m[1])});
+  return "SW-"+String(max+1).padStart(4,"0");
+}
+function editor(p){
+  const isNew=!p;p=p||{id:uid(),sku:nextSku(),title:"",category:S.cat!=="all"?S.cat:(S.data.categories[0]||{}).id||"",price:"",image:"",video:"",description:""};
+  const ov=modal(`<h3>${isNew?"Nov program":"Uredi program"}</h3><p class="sub">Slika naj bo povezava Imgur (i.imgur.com/…jpg), video pa YouTube povezava.</p>
+  <form id="ef">
+    <div class="fld"><label>Naziv programa</label><input name="title" required value="${esc(p.title)}"></div>
+    <div class="g2"><div class="fld"><label>Šifra artikla</label><input name="sku" value="${esc(p.sku)}"></div>
+    <div class="fld"><label>Cena (€)</label><input name="price" inputmode="decimal" value="${esc(p.price)}" placeholder="npr. 49 ali 0 = brezplačno"></div></div>
+    <div class="fld"><label>Kategorija</label><select name="category"><option value="">— brez kategorije —</option>${S.data.categories.map(c=>`<option value="${esc(c.id)}" ${c.id===p.category?"selected":""}>${esc(c.name)}</option>`).join("")}</select></div>
+    <div class="fld"><label>Slika (Imgur URL, 16:9)</label><input name="image" value="${esc(p.image)}" placeholder="https://i.imgur.com/xxxxxxx.jpg"></div>
+    <div class="fld"><label>YouTube video (tutorial)</label><input name="video" value="${esc(p.video)}" placeholder="https://www.youtube.com/watch?v=…"></div>
+    <div class="prev"><div id="pi">slika</div><div id="pv">video</div></div>
+    <div class="fld"><label>Opis programa</label><textarea name="description">${esc(p.description)}</textarea><div class="hint">Prazna vrstica = nov odstavek.</div></div>
+    <div class="actions"><button type="button" class="btn" id="ec">Prekliči</button><button class="btn primary">${isNew?"Dodaj":"Uporabi"}</button></div>
+  </form>`);
+  const f=$("#ef",ov),upd=()=>{
+    const im=imgFix(f.image.value),y=ytParse(f.video.value);
+    $("#pi",ov).style.backgroundImage=im?`url("${im.replace(/"/g,"")}")`:"";$("#pi",ov).textContent=im?"":"slika";
+    $("#pv",ov).style.backgroundImage=y?`url("https://i.ytimg.com/vi/${y.id}/hqdefault.jpg")`:"";$("#pv",ov).textContent=y?"":(f.video.value?"neveljavna povezava":"video");
+  };
+  f.image.oninput=f.video.oninput=upd;upd();
+  $("#ec",ov).onclick=ov.close;
+  f.onsubmit=e=>{
+    e.preventDefault();const v=Object.fromEntries(new FormData(f));
+    Object.assign(p,{title:v.title.trim(),sku:v.sku.trim(),price:v.price.trim(),category:v.category,image:imgFix(v.image),video:v.video.trim(),description:v.description.trim()});
+    if(isNew) S.data.products.push(p);
+    setDirty();ov.close();render();
+    document.getElementById(p.id)?.scrollIntoView({behavior:"smooth",block:"start"});
+  };
+}
+function catsModal(){
+  const cats=S.data.categories.map(c=>({...c}));
+  const ov=modal(`<h3>Kategorije</h3><p class="sub">Dodajte, preimenujte ali izbrišite rubrike.</p><div id="cl"></div>
+    <div class="actions"><button class="btn sm" id="ca">+ Nova kategorija</button><span class="spacer"></span><button class="btn" id="cc">Prekliči</button><button class="btn primary" id="cs">Uporabi</button></div>`);
+  const draw=()=>{$("#cl",ov).innerHTML=cats.map((c,i)=>`<div class="catrow"><input value="${esc(c.name)}" data-i="${i}"><button class="btn sm" data-u="${i}">↑</button><button class="btn sm danger" data-d="${i}">✕</button></div>`).join("")};
+  draw();
+  ov.addEventListener("input",e=>{if(e.target.dataset.i!==undefined)cats[e.target.dataset.i].name=e.target.value});
+  ov.addEventListener("click",e=>{
+    const u=e.target.dataset.u,d=e.target.dataset.d;
+    if(u!==undefined&&+u>0){[cats[u-1],cats[u]]=[cats[u],cats[u-1]];draw()}
+    if(d!==undefined){cats.splice(+d,1);draw()}
+  });
+  $("#ca",ov).onclick=()=>{cats.push({id:"k"+Date.now().toString(36),name:""});draw();ov.querySelector(".catrow:last-child input").focus()};
+  $("#cc",ov).onclick=ov.close;
+  $("#cs",ov).onclick=()=>{
+    const clean=cats.filter(c=>c.name.trim()).map(c=>({id:c.id,name:c.name.trim()}));
+    const ids=new Set(clean.map(c=>c.id));
+    S.data.products.forEach(p=>{if(p.category&&!ids.has(p.category))p.category=""});
+    if(S.cat!=="all"&&!ids.has(S.cat))S.cat="all";
+    S.data.categories=clean;setDirty();ov.close();render();
+  };
+}
+function siteModal(){
+  const s=S.data.site;
+  const ov=modal(`<h3>Nastavitve strani</h3><form id="sf">
+    <div class="fld"><label>Naslov strani</label><input name="title" value="${esc(s.title)}"></div>
+    <div class="fld"><label>Podnaslov</label><textarea name="tagline" style="min-height:80px">${esc(s.tagline)}</textarea></div>
+    <div class="fld"><label>Kontaktni e-naslov</label><input name="contact" type="email" value="${esc(s.contact)}"><div class="hint">Če ga vnesete, se pri programih prikaže gumb »Povprašaj«.</div></div>
+    <div class="actions"><button type="button" class="btn" id="sc">Prekliči</button><button class="btn primary">Uporabi</button></div></form>`);
+  $("#sc",ov).onclick=ov.close;
+  $("#sf",ov).onsubmit=e=>{e.preventDefault();Object.assign(S.data.site,Object.fromEntries(new FormData(e.target)));setDirty();ov.close();render()};
+}
+
+/* ============ SHRANJEVANJE NA GITHUB ============ */
+async function save(){
+  const btn=$("#saveBtn"),c=S.cfg;btn.disabled=true;btn.textContent="Shranjujem …";
+  try{
+    const body={message:"Posodobitev kataloga programov",content:b64e(JSON.stringify(S.data,null,2)+"\n"),branch:c.branch};
+    if(S.sha) body.sha=S.sha;
+    const url=`/repos/${c.owner}/${c.repo}/contents/${encodeURIComponent(c.path).replace(/%2F/g,"/")}`;
+    let j;
+    try{j=await gh(url,{method:"PUT",body:JSON.stringify(body)})}
+    catch(err){ // sha zastarel → poskusi še enkrat s svežim
+      if(!/does not match|sha/i.test(err.message)) throw err;
+      const cur=await gh(url+"?ref="+encodeURIComponent(c.branch),{allow404:true});
+      if(cur) body.sha=cur.sha;j=await gh(url,{method:"PUT",body:JSON.stringify(body)});
+    }
+    S.sha=j.content.sha;setDirty(false);toast("Shranjeno ✓ Stran se posodobi v ~1 minuti.");
+  }catch(err){toast(err.message,true)}
+  btn.disabled=false;btn.textContent="Shrani na GitHub";
+}
+
+/* ============ ZAGON ============ */
+(async function(){
+  await loadPublic();
+  let tok=null;try{tok=sessionStorage.getItem("gh_tok")||localStorage.getItem("gh_tok")}catch{}
+  const cfg=savedCfg();
+  if(tok&&cfg){ // samodejna ponovna prijava
+    try{const r=await gh(`/repos/${cfg.owner}/${cfg.repo}`,{},tok);
+      if(r.permissions&&r.permissions.push){S.token=tok;S.cfg=cfg;S.admin=true;await enterAdmin()}}catch{}
+  }
+  if(location.hash&&location.hash.length>1){setTimeout(()=>document.getElementById(decodeURIComponent(location.hash.slice(1)))?.scrollIntoView(),200)}
+})();
+</script>
+</body>
+</html>
