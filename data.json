@@ -32,16 +32,6 @@
   ],
   "products": [
     {
-      "id": "demo1",
-      "sku": "SW-0001",
-      "title": "Primer programa",
-      "category": "uporabni",
-      "price": "29",
-      "image": "",
-      "video": "",
-      "description": "To je primer vnosa. Vstopite v Admin, dodajte svoje programe in jih shranite na GitHub.\n\nVsak program ima sliko 16:9, video navodilo, opis, ceno in šifro artikla."
-    },
-    {
       "id": "pjora41uiht",
       "sku": "SW-0002",
       "title": "Meteo Pro",
