@@ -24,6 +24,10 @@
     {
       "id": "igre",
       "name": "Igre"
+    },
+    {
+      "id": "kmwj8v6e5",
+      "name": "Znanstveni programi"
     }
   ],
   "products": [
@@ -41,7 +45,7 @@
       "id": "pjora41uiht",
       "sku": "SW-0002",
       "title": "Meteo Pro",
-      "category": "uporabni",
+      "category": "kmwj8v6e5",
       "price": "780",
       "image": "https://i.imgur.com/b1W8WPk.jpeg",
       "video": "",
