@@ -36,6 +36,16 @@
       "image": "",
       "video": "",
       "description": "To je primer vnosa. Vstopite v Admin, dodajte svoje programe in jih shranite na GitHub.\n\nVsak program ima sliko 16:9, video navodilo, opis, ceno in šifro artikla."
+    },
+    {
+      "id": "pjora41uiht",
+      "sku": "SW-0002",
+      "title": "Meteo Pro",
+      "category": "uporabni",
+      "price": "780",
+      "image": "https://i.imgur.com/b1W8WPk.jpeg",
+      "video": "",
+      "description": ""
     }
   ]
 }
