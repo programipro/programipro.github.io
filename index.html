@@ -95,6 +95,16 @@ body.is-dirty .dirty{display:inline-block}
 .cat{display:inline-block;font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);background:rgba(108,140,255,.12);padding:4px 12px;border-radius:999px}
 .desc{color:color-mix(in srgb,var(--text) 82%,var(--muted));font-size:1.02rem}
 .desc p{margin:0 0 12px}
+.desc strong{font-weight:700;color:var(--text)}
+.desc em{font-style:italic}
+.desc ul,.desc ol{margin:0 0 12px;padding-left:1.4em}
+.desc li{margin:0 0 4px}
+.desc h3{margin:18px 0 8px;font-size:1.15rem;color:var(--text);letter-spacing:-.01em}
+.desc a{word-break:break-word}
+.edtools{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.ed{min-height:170px;max-height:46vh;overflow:auto;padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:var(--surface2);outline:none;font-size:.98rem}
+.ed:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(108,140,255,.15)}
+.ed:empty::before{content:attr(data-ph);color:var(--muted)}
 .meta{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px;align-self:start}
 .price{font-size:2rem;font-weight:800;letter-spacing:-.02em}
 .price small{font-size:.9rem;color:var(--muted);font-weight:500}
@@ -278,6 +288,60 @@ function normalize(d){
   return {site:{...DEFAULT_DATA.site,...(d.site||{})},categories:Array.isArray(d.categories)?d.categories:[],products:Array.isArray(d.products)?d.products:[]};
 }
 
+/* ============ BOGAT OPIS (krepko, seznami, naslovi) ============ */
+const inlineMd = s=>s.replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>");
+function plainToHtml(t){
+  let out="",list=null,para=[];
+  const fP=()=>{if(para.length){out+="<p>"+para.join("<br>")+"</p>";para=[]}};
+  const fL=()=>{if(list){out+=`</${list}>`;list=null}};
+  for(const raw of String(t||"").replace(/\r/g,"").split("\n")){
+    const l=raw.trim(); let m;
+    if(!l){fP();fL();continue}
+    if(m=l.match(/^#{1,6}\s+(.*)$/)){fP();fL();out+="<h3>"+inlineMd(esc(m[1]))+"</h3>"}
+    else if(m=l.match(/^[-*•]\s+(.*)$/)){fP();if(list!=="ul"){fL();out+="<ul>";list="ul"}out+="<li>"+inlineMd(esc(m[1]))+"</li>"}
+    else if(m=l.match(/^\d+[.)]\s+(.*)$/)){fP();if(list!=="ol"){fL();out+="<ol>";list="ol"}out+="<li>"+inlineMd(esc(m[1]))+"</li>"}
+    else{fL();para.push(inlineMd(esc(l)))}
+  }
+  fP();fL();return out;
+}
+function cleanHtml(html){
+  const doc=new DOMParser().parseFromString(String(html||""),"text/html");
+  const out=document.createElement("div");
+  const bold=n=>{const w=(n.style&&n.style.fontWeight)||"";return w==="bold"||w==="bolder"||+w>=600};
+  const ital=n=>(n.style&&n.style.fontStyle)==="italic";
+  (function walk(src,dst){
+    src.childNodes.forEach(n=>{
+      if(n.nodeType===3){dst.appendChild(document.createTextNode(n.nodeValue));return}
+      if(n.nodeType!==1) return;
+      const t=n.tagName;
+      if(/^(SCRIPT|STYLE|IFRAME|OBJECT|EMBED|SVG|NOSCRIPT|TEMPLATE|HEAD|BUTTON|INPUT|TEXTAREA|SELECT)$/.test(t)) return;
+      let tag=null;
+      if(t==="STRONG"||t==="B") tag=(n.style&&/^(normal|400)$/.test(n.style.fontWeight))?null:"strong";
+      else if(t==="EM"||t==="I") tag="em";
+      else if(/^H[1-6]$/.test(t)) tag="h3";
+      else if(t==="P"||t==="DIV"||t==="BLOCKQUOTE"||t==="PRE") tag="p";
+      else if(t==="UL"||t==="OL"||t==="LI"||t==="BR") tag=t.toLowerCase();
+      else if(t==="A"&&/^https?:\/\//i.test(n.getAttribute("href")||"")) tag="a";
+      else if(t==="SPAN"||t==="FONT"||t==="U"||t==="CODE"||t==="MARK"){ if(bold(n)) tag="strong"; else if(ital(n)) tag="em"; }
+      if(!tag){walk(n,dst);return}                // neznana oznaka: obdrži vsebino, odstrani oznako
+      const el=document.createElement(tag);
+      if(tag==="a"){el.href=n.getAttribute("href");el.target="_blank";el.rel="noopener noreferrer"}
+      if(tag!=="br") walk(n,el);
+      // <p> v <p>: ne gnezdi
+      if(tag==="p"&&dst.nodeName==="P"){while(el.firstChild)dst.appendChild(el.firstChild);dst.appendChild(document.createElement("br"))}
+      else dst.appendChild(el);
+    });
+  })(doc.body,out);
+  // odstrani prazne odstavke in ponavljajoče se <br>
+  out.querySelectorAll("p,strong,em,li,h3").forEach(e=>{if(!e.textContent.trim()&&!e.querySelector("br"))e.remove()});
+  return out.innerHTML.replace(/(<br>\s*){3,}/g,"<br><br>").replace(/^(\s|<br>)+|(\s|<br>)+$/g,"");
+}
+function descHtml(d){
+  d=String(d||"");
+  return /<\/?(p|br|strong|b|em|i|ul|ol|li|h[1-6]|a|div|span)\b/i.test(d)?cleanHtml(d):plainToHtml(d);
+}
+const descText=d=>descHtml(d).replace(/<[^>]+>/g," ").replace(/&nbsp;|&amp;|&lt;|&gt;/g," ");
+
 /* ============ NALAGANJE ============ */
 async function loadPublic(){
   try{
@@ -307,12 +371,12 @@ function render(){
 }
 function visible(){
   const q=S.q.trim().toLowerCase();
-  return S.data.products.filter(p=>(S.cat==="all"||p.category===S.cat)&&(!q||[p.title,p.sku,p.description,catName(p.category)].join(" ").toLowerCase().includes(q)));
+  return S.data.products.filter(p=>(S.cat==="all"||p.category===S.cat)&&(!q||[p.title,p.sku,descText(p.description),catName(p.category)].join(" ").toLowerCase().includes(q)));
 }
 const ICON_FS='<svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>';
 function card(p){
   const yt=ytParse(p.video), img=imgFix(p.image)||ph(p.title), m=money(p.price);
-  const paras=String(p.description||"").split(/\n{2,}/).map(x=>`<p>${esc(x).replace(/\n/g,"<br>")}</p>`).join("");
+  const paras=descHtml(p.description);
   const vid=yt?`<div class="media"><div class="frame"><span class="tag">Navodila</span>
       <button class="yt" data-yt="${yt.id}" data-start="${yt.start}" aria-label="Predvajaj video: ${esc(p.title)}">
       <img loading="lazy" referrerpolicy="no-referrer" alt="" src="https://i.ytimg.com/vi/${yt.id}/hqdefault.jpg"><span class="play"><svg viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></svg></span></button></div></div>`:"";
@@ -480,7 +544,10 @@ function editor(p){
     <div class="fld"><label>Slika (Imgur URL, 16:9)</label><input name="image" value="${esc(p.image)}" placeholder="https://i.imgur.com/xxxxxxx.jpg"></div>
     <div class="fld"><label>YouTube video (tutorial)</label><input name="video" value="${esc(p.video)}" placeholder="https://www.youtube.com/watch?v=…"></div>
     <div class="prev"><div id="pi">slika</div><div id="pv">video</div></div>
-    <div class="fld"><label>Opis programa</label><textarea name="description">${esc(p.description)}</textarea><div class="hint">Prazna vrstica = nov odstavek.</div></div>
+    <div class="fld"><label>Opis programa</label>
+      <div class="edtools"><button type="button" class="btn sm" data-cmd="bold" title="Krepko (Ctrl+B)"><b>B</b></button><button type="button" class="btn sm" data-cmd="italic" title="Ležeče (Ctrl+I)"><i>I</i></button><button type="button" class="btn sm" data-cmd="insertUnorderedList" title="Seznam">• Seznam</button><button type="button" class="btn sm" data-cmd="formatBlock" data-val="h3" title="Podnaslov">Naslov</button><button type="button" class="btn sm" data-cmd="removeFormat" title="Počisti oblikovanje">Počisti</button></div>
+      <div class="ed desc" id="ed" contenteditable="true" role="textbox" aria-multiline="true" data-ph="Prilepite opis (npr. iz ChatGPT) – krepki tekst ostane krepek."></div>
+      <div class="hint">Prilepljeno besedilo ohrani krepko, sezname in naslove. Zvezdice **…** se samodejno pretvorijo v krepko.</div></div>
     <div class="actions"><button type="button" class="btn" id="ec">Prekliči</button><button class="btn primary">${isNew?"Dodaj":"Uporabi"}</button></div>
   </form>`);
   const f=$("#ef",ov),upd=()=>{
@@ -489,10 +556,23 @@ function editor(p){
     $("#pv",ov).style.backgroundImage=y?`url("https://i.ytimg.com/vi/${y.id}/hqdefault.jpg")`:"";$("#pv",ov).textContent=y?"":(f.video.value?"neveljavna povezava":"video");
   };
   f.image.oninput=f.video.oninput=upd;upd();
+  const ed=$("#ed",ov);
+  ed.innerHTML=descHtml(p.description);
+  try{document.execCommand("defaultParagraphSeparator",false,"p")}catch{}
+  ed.addEventListener("paste",e=>{
+    e.preventDefault();
+    const cd=e.clipboardData,h=cd.getData("text/html"),t=cd.getData("text/plain");
+    const html=h?inlineMd(cleanHtml(h)):plainToHtml(t);
+    document.execCommand("insertHTML",false,html);
+  });
+  ov.querySelectorAll("[data-cmd]").forEach(b=>{
+    b.addEventListener("mousedown",e=>e.preventDefault());
+    b.addEventListener("click",()=>{ed.focus();document.execCommand(b.dataset.cmd,false,b.dataset.val||null)});
+  });
   $("#ec",ov).onclick=ov.close;
   f.onsubmit=e=>{
     e.preventDefault();const v=Object.fromEntries(new FormData(f));
-    Object.assign(p,{title:v.title.trim(),sku:v.sku.trim(),price:v.price.trim(),category:v.category,image:imgFix(v.image),video:v.video.trim(),description:v.description.trim()});
+    Object.assign(p,{title:v.title.trim(),sku:v.sku.trim(),price:v.price.trim(),category:v.category,image:imgFix(v.image),video:v.video.trim(),description:cleanHtml(ed.innerHTML)});
     if(isNew) S.data.products.push(p);
     setDirty();ov.close();render();
     document.getElementById(p.id)?.scrollIntoView({behavior:"smooth",block:"start"});
